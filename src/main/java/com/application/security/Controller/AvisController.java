@@ -2,7 +2,9 @@ package com.application.security.Controller;
 
 import java.util.List;
 
+import org.apache.tomcat.util.http.parser.MediaType;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +32,7 @@ public class AvisController {
         this.avisService.creer(avis);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMINISTRATEUR')")
     @GetMapping
     public List<Avis> liste(){
        // Utilisateur utilisateur = (Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal();

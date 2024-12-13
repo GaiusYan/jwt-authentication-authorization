@@ -40,6 +40,8 @@ public class UtilisateurService implements UserDetailsService{
             throw new RuntimeException("Votre mail n'est pas valide");
         } 
 
+        
+
         Optional<Utilisateur> utilisateurOptional = this.utilisateurRepository.findByEmail(utilisateur.getEmail());
         if (utilisateurOptional.isPresent()) {
             throw new RuntimeException("Votre email est déjà utilisé");
@@ -48,8 +50,14 @@ public class UtilisateurService implements UserDetailsService{
         utilisateur.setPassword(this.passwordEncoder.encode(utilisateur.getPassword()));
         Role role = new Role();
         role.setLibelle(RoleType.UTILISATEUR);
+        if(utilisateur.getRole() != null && utilisateur.getRole().getLibelle().equals(RoleType.ADMINISTRATEUR)){
+            role.setLibelle(RoleType.ADMINISTRATEUR);
+            utilisateur.setActif(true);
+        }
         utilisateur.setRole(role);
-        this.validationService.enregistrer(this.utilisateurRepository.save(utilisateur));
+        
+        if(role.getLibelle().equals(RoleType.UTILISATEUR))
+            this.validationService.enregistrer(this.utilisateurRepository.save(utilisateur));
     }
 
     public Utilisateur getUtilisateurByUsername(String username){
